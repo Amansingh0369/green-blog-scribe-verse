@@ -1,8 +1,12 @@
 
 import { BlogPost } from "@/types/blog";
-import { v4 as uuidv4 } from "uuid";
 
 const STORAGE_KEY = "green-blog-posts";
+
+// Generate a unique ID without using uuid
+const generateUniqueId = (): string => {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
 
 // Get all blog posts
 export const getAllBlogPosts = (): BlogPost[] => {
@@ -28,7 +32,7 @@ export const saveBlogPost = (post: BlogPost): BlogPost => {
     // Create new post
     const newPost = {
       ...post,
-      id: uuidv4(),
+      id: generateUniqueId(),
     };
     const newPosts = [newPost, ...posts];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newPosts));
@@ -52,7 +56,7 @@ export const initializeBlogPosts = (): void => {
   if (posts.length === 0) {
     const samplePosts: BlogPost[] = [
       {
-        id: uuidv4(),
+        id: generateUniqueId(),
         title: "Welcome to Green Blog",
         summary: "Learn about our mission to promote environmental awareness through blogging.",
         content: `# Welcome to Green Blog
@@ -73,7 +77,7 @@ We hope you'll join us on this journey!`,
         updatedAt: new Date().toISOString(),
       },
       {
-        id: uuidv4(),
+        id: generateUniqueId(),
         title: "10 Easy Ways to Reduce Your Carbon Footprint",
         summary: "Simple changes you can make in your daily life to help the environment.",
         content: `# 10 Easy Ways to Reduce Your Carbon Footprint
