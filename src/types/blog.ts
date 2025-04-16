@@ -6,4 +6,5 @@ export interface BlogPost {
   content: string;
   createdAt: string;
   updatedAt: string;
+  likes?: number;
 }

@@ -2,6 +2,16 @@
 import { BlogPost } from "@/types/blog";
 
 const STORAGE_KEY = "green-blog-posts";
+const COMMENTS_KEY = "green-blog-comments";
+
+// Type for comments
+export interface BlogComment {
+  id: string;
+  postId: string;
+  author: string;
+  content: string;
+  createdAt: string;
+}
 
 // Generate a unique ID without using uuid
 const generateUniqueId = (): string => {
@@ -33,6 +43,7 @@ export const saveBlogPost = (post: BlogPost): BlogPost => {
     const newPost = {
       ...post,
       id: generateUniqueId(),
+      likes: 0,
     };
     const newPosts = [newPost, ...posts];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newPosts));
@@ -47,6 +58,42 @@ export const deleteBlogPost = (id: string): void => {
   const posts = getAllBlogPosts();
   const updatedPosts = posts.filter((post) => post.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPosts));
+  
+  // Also delete comments for this post
+  const comments = getAllComments();
+  const updatedComments = comments.filter(comment => comment.postId !== id);
+  localStorage.setItem(COMMENTS_KEY, JSON.stringify(updatedComments));
+};
+
+// Like a blog post
+export const likeBlogPost = (id: string, likes: number): void => {
+  const posts = getAllBlogPosts();
+  const updatedPosts = posts.map((post) => {
+    if (post.id === id) {
+      return { ...post, likes };
+    }
+    return post;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPosts));
+};
+
+// Get all comments
+export const getAllComments = (): BlogComment[] => {
+  const comments = localStorage.getItem(COMMENTS_KEY);
+  return comments ? JSON.parse(comments) : [];
+};
+
+// Get comments for a specific post
+export const getCommentsForPost = (postId: string): BlogComment[] => {
+  const comments = getAllComments();
+  return comments.filter(comment => comment.postId === postId);
+};
+
+// Add a comment
+export const addComment = (postId: string, comment: BlogComment): void => {
+  const comments = getAllComments();
+  const updatedComments = [...comments, comment];
+  localStorage.setItem(COMMENTS_KEY, JSON.stringify(updatedComments));
 };
 
 // Initialize blog with sample data if empty
@@ -75,6 +122,7 @@ At Green Blog, we believe that sharing knowledge and experiences is key to creat
 We hope you'll join us on this journey!`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        likes: 5,
       },
       {
         id: generateUniqueId(),
@@ -96,11 +144,39 @@ Making a positive impact on the environment doesn't have to be difficult. Here a
 10. **Adjust your thermostat** by a few degrees
 
 These small changes can add up to make a significant difference when adopted by many people!`,
-        createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
         updatedAt: new Date(Date.now() - 86400000).toISOString(),
+        likes: 12,
       },
     ];
     
     localStorage.setItem(STORAGE_KEY, JSON.stringify(samplePosts));
+    
+    // Add sample comments
+    const sampleComments: BlogComment[] = [
+      {
+        id: generateUniqueId(),
+        postId: samplePosts[0].id,
+        author: "Jane Smith",
+        content: "Great initiative! Looking forward to more content on sustainable living.",
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: generateUniqueId(),
+        postId: samplePosts[1].id,
+        author: "Mike Johnson",
+        content: "I've been trying to reduce my carbon footprint. These tips are really helpful!",
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: generateUniqueId(),
+        postId: samplePosts[1].id,
+        author: "Sarah Williams",
+        content: "I would add: buy secondhand when possible! It makes a big difference.",
+        createdAt: new Date(Date.now() - 43200000).toISOString() // 12 hours ago
+      }
+    ];
+    
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(sampleComments));
   }
 };
