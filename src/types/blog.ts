@@ -7,4 +7,12 @@ export interface BlogPost {
   createdAt: string;
   updatedAt: string;
   likes?: number;
+  comments?: Comment[];
+}
+
+export interface Comment {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
 }

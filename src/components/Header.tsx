@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Menu } from "lucide-react";
+import { PlusCircle, Menu, LogOut } from "lucide-react";
 import { useState } from "react";
 
 const Header = () => {
@@ -32,6 +32,12 @@ const Header = () => {
               New Post
             </Button>
           </Link>
+          <Link to="/landing" className="text-gray-600 hover:text-green-600">
+            <Button variant="outline" className="border-green-600 text-green-600">
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </Link>
         </nav>
         
         {/* Mobile navigation */}
@@ -51,6 +57,13 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 New Post
+              </Link>
+              <Link 
+                to="/landing" 
+                className="py-2 text-gray-600 hover:text-green-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Logout
               </Link>
             </div>
           </div>
